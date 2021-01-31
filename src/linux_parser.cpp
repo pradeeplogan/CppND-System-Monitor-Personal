@@ -81,7 +81,7 @@ long LinuxParser::UpTime()
     linestream >> uptime;
     
   }
-  return std::stoi(uptime, nullptr, 10);
+  return long(std::stoi(uptime, nullptr, 10));
 }
 
 // TODO: Read and return the number of jiffies for the system
