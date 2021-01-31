@@ -78,10 +78,10 @@ long LinuxParser::UpTime()
   if(filestream.is_open()) {
     std::getline(filestream, line);
     std::istringstream linestream(line);
+    std::replace(line.begin(), line.end(), '.', ' ');
     linestream >> uptime;
-    
   }
-  return long(std::stoi(uptime, nullptr, 10));
+  return long(std::stoi(uptime, nullptr, 0));
 }
 
 // TODO: Read and return the number of jiffies for the system
