@@ -16,42 +16,11 @@ float Processor::Utilization()
     totald    = std::abs(total - pre_total);
     idled     = std::abs(idle_ - pre_idle_);
 
-    // pre_total = pre_nonidel_;
-    // total     = nonidel_;
-
-    // totald    = std::abs(total - pre_total);
-    // idled     = std::abs(nonidel_ - pre_nonidel_);
-
     pre_idle_    = idle_;
     pre_nonidel_ = nonidel_;
 
-    if (totald == 0) {
-        if (pre_total != 0) 
-            return 0.2;//float((pre_total - pre_idle_)/pre_total);
-        else 
-            return 0.11;      
-    }
-
     return float(float(totald- idled)/float(totald));
 }
-/*
-PrevIdle = previdle + previowait
-Idle = idle + iowait
-
-PrevNonIdle = prevuser + prevnice + prevsystem + previrq + prevsoftirq + prevsteal
-NonIdle = user + nice + system + irq + softirq + steal
-
-PrevTotal = PrevIdle + PrevNonIdle
-Total = Idle + NonIdle
-
-# differentiate: actual value minus the previous one
-totald = Total - PrevTotal
-idled = Idle - PrevIdle
-
-CPU_Percentage = (totald - idled)/totald
-
-
-*/
 
 void Processor::set_current_utilization()
 {
