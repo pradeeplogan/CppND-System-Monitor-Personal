@@ -22,6 +22,16 @@ class System {
  private:
   Processor cpu_ = {};
   std::vector<Process> processes_ = {};
+  const int total_cpu_stat = 8;
+  enum Cpu_stats_ {user = 0, 
+                   nice, 
+                   system,
+                   idle,
+                   iowait,
+                   irq,
+                   softirq,
+                   steal};
+
 };
 
 #endif

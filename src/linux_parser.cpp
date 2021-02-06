@@ -75,8 +75,8 @@ float LinuxParser::MemoryUtilization()
   string total_mem_str;
   string free_mem_str;
   string value;
-  float  total_mem;
-  float  free_mem;
+  int    total_mem;
+  int    free_mem;
    std::ifstream filestream(kProcDirectory + kMeminfoFilename);
   if (filestream.is_open()) {
     while (std::getline(filestream, line)) {
@@ -96,7 +96,7 @@ float LinuxParser::MemoryUtilization()
               return 0.0;
           }
           else {
-            return float((total_mem-free_mem)/total_mem);
+            return (float(total_mem-free_mem)/float(total_mem));
           }
         }
     }
@@ -132,14 +132,75 @@ long LinuxParser::ActiveJiffies() { return 0; }
 // TODO: Read and return the number of idle jiffies for the system
 long LinuxParser::IdleJiffies() { return 0; }
 
-// TODO: Read and return CPU utilization
-vector<string> LinuxParser::CpuUtilization() { return {}; }
+//Read and return CPU utilization
+vector<string> LinuxParser::CpuUtilization()
+{ 
+  string cpu;
+  string line;
+  string str;
+  vector<string> cpu_stat;
+  std::ifstream filestream(kProcDirectory + kStatFilename);
+  if(filestream.is_open()) {
+    std::getline(filestream,line);
+    std::istringstream linestream(line);
 
-// TODO: Read and return the total number of processes
-int LinuxParser::TotalProcesses() { return 0; }
+    // cpu_stat[0] == CPU-user  unit::USER_HZ
+    // cpu_stat[1] == CPU-nice
+    // cpu_stat[2] == CPU-system
+    // cpu_stat[3] == CPU-idle
+    // cpu_stat[4] == CPU-iowait
+    // cpu_stat[5] == CPU-irq
+    // cpu_stat[6] == CPU-softirq
+    // cpu_stat[7] == CPU-steal
+    linestream >> cpu;
+    for(int i = 0; i < 8; i++) {
+      linestream >> str;
+      cpu_stat.push_back(str);
+    }
+    return cpu_stat; 
+  }
+  return cpu_stat; 
+}
+
+// Read and return the total number of processes
+int LinuxParser::TotalProcesses()
+{ 
+  string key;
+  string value;
+  string line;
+  std::ifstream filesystem(kProcDirectory + kStatFilename);
+  if (filesystem.is_open()) {
+    while(std::getline(filesystem,line)) {
+      std::istringstream linestream(line);
+      linestream >> key;
+      if (key == "processes") {
+        linestream >> value;
+        return std::stoi(value,nullptr,0);
+      }
+    }
+  }
+  return 0; 
+}
 
 // TODO: Read and return the number of running processes
-int LinuxParser::RunningProcesses() { return 0; }
+int LinuxParser::RunningProcesses()
+{ 
+  string key;
+  string value;
+  string line;
+  std::ifstream filesystem(kProcDirectory + kStatFilename);
+  if (filesystem.is_open()) {
+    while(std::getline(filesystem,line)) {
+      std::istringstream linestream(line);
+      linestream >> key;
+      if (key == "procs_running") {
+        linestream >> value;
+        return std::stoi(value,nullptr,0);
+      }
+    }
+  }
+  return 0;
+}
 
 // TODO: Read and return the command associated with a process
 // REMOVE: [[maybe_unused]] once you define the function
