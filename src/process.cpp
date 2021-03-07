@@ -22,11 +22,11 @@ float Process::CpuUtilization()
     int total_time;
     long int seconds;
     _process_uti_component = std::move(LinuxParser::ProcessUtilization(pid_));
-        
+
     total_time =  _process_uti_component[utime] + _process_uti_component[stime] +
                   _process_uti_component[cutime] + _process_uti_component[cstime];
 
-    seconds    = _uptime - (_process_uti_component[starttime]/sysconf(_SC_CLK_TCK));
+    seconds    = LinuxParser::UpTime() - (_process_uti_component[starttime]/sysconf(_SC_CLK_TCK));
 
     _cpu_uti   = (float((total_time/sysconf(_SC_CLK_TCK))) / seconds);
     if (isnan(_cpu_uti)) {
@@ -62,8 +62,10 @@ long int Process::UpTime()
 }
 
 // TODO: Overload the "less than" comparison operator for Process objects
-// REMOVE: [[maybe_unused]] once you define the function
-bool Process::operator<(Process const& a[[maybe_unused]]) const { return true; }
+bool Process::operator<(Process const& a) const
+{ 
+    return std::stoi(this->_mem_size) < std::stoi(a._mem_size) ? true : false ;
+}
 
 // Sets process's ID
 void Process::set_pid(const int pid)

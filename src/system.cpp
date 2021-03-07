@@ -22,6 +22,19 @@ Processor& System::Cpu()
 // Return a container composed of the system's processes
 vector<Process>& System::Processes()
 {
+    update_process_vec();
+
+    // Sort in respect to memory utilization
+    std::sort(processes_.rbegin(),processes_.rend());
+ 
+    return processes_;    
+}
+
+// ---------------------------------------------------------
+//  Update the private data member processes_ with new pids 
+// ---------------------------------------------------------
+void System::update_process_vec()
+{
     vector<int> pid = LinuxParser::Pids(); 
     int pid_exist   = 0;
     Process temp;
@@ -45,10 +58,8 @@ vector<Process>& System::Processes()
             pid_exist = 0;
         }
         
-    }
-    return processes_;    
+    }    
 }
-
 // Return the system's kernel identifier (string)
 std::string System::Kernel()
 {
