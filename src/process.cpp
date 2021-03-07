@@ -28,7 +28,7 @@ float Process::CpuUtilization()
 
     seconds    = LinuxParser::UpTime() - (_process_uti_component[starttime]/sysconf(_SC_CLK_TCK));
 
-    _cpu_uti   = (float((total_time/sysconf(_SC_CLK_TCK))) / seconds);
+    _cpu_uti   = (static_cast<float>((total_time/sysconf(_SC_CLK_TCK))) / seconds);
     if (isnan(_cpu_uti)) {
         return 0.0;
     }
